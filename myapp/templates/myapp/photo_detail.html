@@ -1,0 +1,31 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ photo.Nom }} - Photo Gallery{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h1>{{ photo.Nom }}</h1>
+    </div>
+    
+    {% if photo.image %}
+        <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}" style="max-height: 500px; object-fit: contain;">
+    {% endif %}
+    
+    <div class="card-body">
+        <p class="lead">{{ photo.Descreption }}</p>
+        <p class="text-muted">Publié le {{ photo.upload_date|date:"d/m/Y à H:i" }}</p>
+        
+        {% if photo.is_pulic %}
+            <span class="badge bg-success">Public</span>
+        {% else %}
+            <span class="badge bg-warning">Privé</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="d-flex gap-2">
+    <a href="{% url 'home' %}" class="btn btn-secondary">Retour à l'accueil</a>
+    <a href="{% url 'photo_list' %}" class="btn btn-primary">Voir toutes les photos</a>
+</div>
+{% endblock %} 

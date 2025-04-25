@@ -1,0 +1,26 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ title }} - Photo Gallery{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">À Propos</h1>
+
+<div class="card">
+    <div class="card-body">
+        <p class="lead">{{ description }}</p>
+        
+        <h2 class="mt-4">Notre mission</h2>
+        <p>
+            Notre mission est de permettre aux photographes amateurs et professionnels 
+            de partager leurs œuvres avec le monde entier. Nous croyons que chaque image 
+            raconte une histoire unique qui mérite d'être partagée.
+        </p>
+        
+        <h2 class="mt-4">Notre équipe</h2>
+        <p>
+            Notre équipe est composée de passionnés de photographie et de développeurs web 
+            dévoués à créer la meilleure expérience possible pour nos utilisateurs.
+        </p>
+    </div>
+</div>
+{% endblock %} 

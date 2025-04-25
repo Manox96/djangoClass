@@ -1,0 +1,33 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ category|title }} - {{ photo.Nom }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="#">Catégories</a></li>
+        <li class="breadcrumb-item active">{{ category|title }}</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">{{ category|title }} - {{ photo.Nom }}</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h2>{{ photo.Nom }}</h2>
+    </div>
+    <div class="card-body">
+        <p class="lead">{{ photo.Descreption }}</p>
+        <p class="text-muted">Publié le {{ photo.upload_date|date:"d/m/Y à H:i" }}</p>
+        
+        {% if photo.is_pulic %}
+            <span class="badge bg-success">Public</span>
+        {% else %}
+            <span class="badge bg-warning">Privé</span>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{% url 'home' %}" class="btn btn-secondary">Retour à l'accueil</a>
+{% endblock %} 

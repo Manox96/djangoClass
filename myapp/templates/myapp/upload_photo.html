@@ -1,0 +1,53 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Upload Photo{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Uploader une nouvelle photo</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="{{ form.Nom.id_for_label }}" class="form-label">{{ form.Nom.label }}</label>
+                {{ form.Nom.errors }}
+                <input type="text" name="{{ form.Nom.name }}" id="{{ form.Nom.id_for_label }}" class="form-control {% if form.Nom.errors %}is-invalid{% endif %}" value="{{ form.Nom.value|default:'' }}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.Descreption.id_for_label }}" class="form-label">{{ form.Descreption.label }}</label>
+                {{ form.Descreption.errors }}
+                <textarea name="{{ form.Descreption.name }}" id="{{ form.Descreption.id_for_label }}" class="form-control {% if form.Descreption.errors %}is-invalid{% endif %}" rows="4">{{ form.Descreption.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
+                {{ form.image.errors }}
+                <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}">
+                <div class="form-text">Formats acceptés : JPG, PNG, GIF</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="{{ form.is_pulic.name }}" id="{{ form.is_pulic.id_for_label }}" class="form-check-input {% if form.is_pulic.errors %}is-invalid{% endif %}" {% if form.is_pulic.value %}checked{% endif %}>
+                <label for="{{ form.is_pulic.id_for_label }}" class="form-check-label">{{ form.is_pulic.label }}</label>
+                {{ form.is_pulic.errors }}
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Uploader</button>
+                <a href="{% url 'photo_list' %}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

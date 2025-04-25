@@ -1,0 +1,52 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ title }} - Photo Gallery{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Bienvenue sur notre galerie photo</h1>
+
+<div class="row">
+    {% if photos %}
+        {% for photo in photos %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if photo.image %}
+                        <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light text-center py-5" style="height: 200px;">
+                            <span class="text-muted">Pas d'image</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ photo.Nom }}</h5>
+                        <p class="card-text">{{ photo.Descreption|truncatewords:20 }}</p>
+                        <p class="text-muted">Publié le {{ photo.upload_date|date:"d/m/Y" }}</p>
+                        <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Aucune photo n'est disponible pour le moment.
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% if photos %}
+<div class="text-center mt-4">
+    <a href="{% url 'upload_photo' %}" class="btn btn-success">
+        <i class="bi bi-upload"></i> Ajouter une nouvelle photo
+    </a>
+</div>
+{% else %}
+<div class="text-center mt-4">
+    <p>Soyez le premier à ajouter une photo!</p>
+    <a href="{% url 'upload_photo' %}" class="btn btn-success btn-lg">
+        <i class="bi bi-upload"></i> Uploader une photo
+    </a>
+</div>
+{% endif %}
+{% endblock %} 
