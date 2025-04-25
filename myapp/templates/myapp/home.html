@@ -3,9 +3,58 @@
 {% block title %}{{ title }} - Photo Gallery{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Bienvenue sur notre galerie photo</h1>
+<h1 class="mb-4">Galerie photo</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
 
 <div class="row">
+    <!-- Upload form card -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Ajouter une nouvelle photo</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.Nom.id_for_label }}" class="form-label">{{ form.Nom.label }}</label>
+                        {{ form.Nom.errors }}
+                        <input type="text" name="{{ form.Nom.name }}" id="{{ form.Nom.id_for_label }}" class="form-control {% if form.Nom.errors %}is-invalid{% endif %}" value="{{ form.Nom.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.Descreption.id_for_label }}" class="form-label">{{ form.Descreption.label }}</label>
+                        {{ form.Descreption.errors }}
+                        <textarea name="{{ form.Descreption.name }}" id="{{ form.Descreption.id_for_label }}" class="form-control {% if form.Descreption.errors %}is-invalid{% endif %}" rows="3">{{ form.Descreption.value|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
+                        {{ form.image.errors }}
+                        <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}" required>
+                        <div class="form-text">Formats: JPG, PNG, GIF</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-upload"></i> Uploader
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Photos gallery -->
     {% if photos %}
         {% for photo in photos %}
             <div class="col-md-4 mb-4">
@@ -27,26 +76,11 @@
             </div>
         {% endfor %}
     {% else %}
-        <div class="col-12">
+        <div class="col-md-8">
             <div class="alert alert-info">
-                Aucune photo n'est disponible pour le moment.
+                Aucune photo n'est disponible pour le moment. Ajoutez votre première photo!
             </div>
         </div>
     {% endif %}
 </div>
-
-{% if photos %}
-<div class="text-center mt-4">
-    <a href="{% url 'upload_photo' %}" class="btn btn-success">
-        <i class="bi bi-upload"></i> Ajouter une nouvelle photo
-    </a>
-</div>
-{% else %}
-<div class="text-center mt-4">
-    <p>Soyez le premier à ajouter une photo!</p>
-    <a href="{% url 'upload_photo' %}" class="btn btn-success btn-lg">
-        <i class="bi bi-upload"></i> Uploader une photo
-    </a>
-</div>
-{% endif %}
 {% endblock %} 

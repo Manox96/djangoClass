@@ -19,7 +19,6 @@
                         <th>Nom</th>
                         <th>Description</th>
                         <th>Date d'ajout</th>
-                        <th>Statut</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -38,13 +37,6 @@
                             <td>{{ photo.Descreption|truncatewords:10 }}</td>
                             <td>{{ photo.upload_date|date:"d/m/Y" }}</td>
                             <td>
-                                {% if photo.is_pulic %}
-                                    <span class="badge bg-success">Public</span>
-                                {% else %}
-                                    <span class="badge bg-warning">Privé</span>
-                                {% endif %}
-                            </td>
-                            <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary">Voir</a>
                                     <button class="btn btn-danger">Supprimer</button>
@@ -53,7 +45,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center">Aucune photo trouvée dans la base de données</td>
+                            <td colspan="6" class="text-center">Aucune photo trouvée dans la base de données</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -68,7 +60,7 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="card bg-light">
                     <div class="card-body text-center">
                         <h3>{{ photos|length }}</h3>
@@ -76,23 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <div class="card-body text-center">
-                        <h3>{{ photos|selectattr:"is_pulic"|list|length }}</h3>
-                        <p class="mb-0">Photos publiques</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <div class="card-body text-center">
-                        <h3>{{ photos|rejectattr:"is_pulic"|list|length }}</h3>
-                        <p class="mb-0">Photos privées</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="card bg-light">
                     <div class="card-body text-center">
                         <h3>{{ photos|selectattr:"image"|list|length }}</h3>

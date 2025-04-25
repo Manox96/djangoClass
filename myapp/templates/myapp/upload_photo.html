@@ -37,12 +37,6 @@
                 <div class="form-text">Formats acceptés : JPG, PNG, GIF</div>
             </div>
             
-            <div class="mb-3 form-check">
-                <input type="checkbox" name="{{ form.is_pulic.name }}" id="{{ form.is_pulic.id_for_label }}" class="form-check-input {% if form.is_pulic.errors %}is-invalid{% endif %}" {% if form.is_pulic.value %}checked{% endif %}>
-                <label for="{{ form.is_pulic.id_for_label }}" class="form-check-label">{{ form.is_pulic.label }}</label>
-                {{ form.is_pulic.errors }}
-            </div>
-            
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Uploader</button>
                 <a href="{% url 'photo_list' %}" class="btn btn-secondary">Annuler</a>

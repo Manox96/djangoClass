@@ -10,12 +10,6 @@
     <div class="card-body">
         <p class="lead">{{ photo.Descreption }}</p>
         <p class="text-muted">Publié le {{ photo.upload_date|date:"d/m/Y à H:i" }}</p>
-        
-        {% if photo.is_pulic %}
-            <span class="badge bg-success">Public</span>
-        {% else %}
-            <span class="badge bg-warning">Privé</span>
-        {% endif %}
     </div>
     <div class="card-footer">
         <p class="text-muted mb-0">
