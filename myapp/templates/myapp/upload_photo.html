@@ -3,45 +3,97 @@
 {% block title %}Upload Photo{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Uploader une nouvelle photo</h1>
-
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block bg-white sidebar shadow-sm rounded-3 p-3 min-vh-100">
+      <div class="sidebar-sticky">
+        <h4 class="mb-4 text-primary fw-bold">Just Drive</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2">
+            <a class="nav-link {% if request.resolver_match.url_name == 'photo_list' %}active{% endif %}" href="/photos/">
+              <i class="bi bi-images me-2"></i> Mes Photos
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link {% if request.resolver_match.url_name == 'upload_photo' %}active{% endif %}" href="{% url 'upload_photo' %}">
+              <i class="bi bi-upload me-2"></i> Upload
+            </a>
+          </li>
+        </ul>
+        <div class="mt-5 text-center">
+          <i class="bi bi-collection-play text-primary" style="font-size: 2.5rem;"></i>
+          <div class="fw-bold display-6 mt-2">
+            {% if photos %}{{ photos|length }}{% else %}0{% endif %}
+          </div>
+          <div class="text-muted">images</div>
         </div>
-    {% endfor %}
-{% endif %}
+      </div>
+    </nav>
 
-<div class="card">
-    <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <div class="mb-3">
-                <label for="{{ form.Nom.id_for_label }}" class="form-label">{{ form.Nom.label }}</label>
-                {{ form.Nom.errors }}
-                <input type="text" name="{{ form.Nom.name }}" id="{{ form.Nom.id_for_label }}" class="form-control {% if form.Nom.errors %}is-invalid{% endif %}" value="{{ form.Nom.value|default:'' }}">
+    <!-- Main Content -->
+    <main class="col-md-10 ms-sm-auto px-md-4">
+      <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-4 border-bottom">
+        <h2 class="fw-bold">Uploader une nouvelle photo</h2>
+        <div class="dropdown">
+          <img src="https://ui-avatars.com/api/?name=User" alt="avatar" class="rounded-circle dropdown-toggle" width="40" height="40" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="col-lg-6">
+          <div class="card shadow-sm rounded-4">
+            <div class="card-header bg-primary text-white rounded-top-4">
+              <h4 class="mb-0"><i class="bi bi-upload me-2"></i>Formulaire d'upload</h4>
             </div>
-            
-            <div class="mb-3">
-                <label for="{{ form.Descreption.id_for_label }}" class="form-label">{{ form.Descreption.label }}</label>
-                {{ form.Descreption.errors }}
-                <textarea name="{{ form.Descreption.name }}" id="{{ form.Descreption.id_for_label }}" class="form-control {% if form.Descreption.errors %}is-invalid{% endif %}" rows="4">{{ form.Descreption.value|default:'' }}</textarea>
+            <div class="card-body">
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="{{ form.Nom.id_for_label }}" class="form-label">{{ form.Nom.label }}</label>
+                  {{ form.Nom.errors }}
+                  <input type="text" name="{{ form.Nom.name }}" id="{{ form.Nom.id_for_label }}" class="form-control {% if form.Nom.errors %}is-invalid{% endif %}" value="{{ form.Nom.value|default:'' }}">
+                </div>
+                <div class="mb-3">
+                  <label for="{{ form.Descreption.id_for_label }}" class="form-label">{{ form.Descreption.label }}</label>
+                  {{ form.Descreption.errors }}
+                  <textarea name="{{ form.Descreption.name }}" id="{{ form.Descreption.id_for_label }}" class="form-control {% if form.Descreption.errors %}is-invalid{% endif %}" rows="4">{{ form.Descreption.value|default:'' }}</textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
+                  {{ form.image.errors }}
+                  <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}">
+                  <div class="form-text">Formats acceptés : JPG, PNG, GIF</div>
+                </div>
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-success btn-lg rounded-pill shadow"><i class="bi bi-upload"></i> Uploader</button>
+                  <a href="{% url 'photo_list' %}" class="btn btn-secondary btn-lg rounded-pill">Annuler</a>
+                </div>
+              </form>
             </div>
-            
-            <div class="mb-3">
-                <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
-                {{ form.image.errors }}
-                <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}">
-                <div class="form-text">Formats acceptés : JPG, PNG, GIF</div>
-            </div>
-            
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Uploader</button>
-                <a href="{% url 'photo_list' %}" class="btn btn-secondary">Annuler</a>
-            </div>
-        </form>
-    </div>
+          </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center">
+          <div class="text-center">
+            <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 5rem;"></i>
+            <h5 class="mt-3 text-secondary">Glissez et déposez vos images ici<br>ou utilisez le formulaire à gauche</h5>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>
 {% endblock %} 

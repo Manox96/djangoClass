@@ -1,45 +1,82 @@
-{% extends 'myapp/base.html' %}
+{% extends 'myapp/layout.html' %}
 
 {% block title %}Liste des Photos{% endblock %}
 
-{% block content %}
-<h1 class="mb-4">Liste des Photos</h1>
+{% block page_title %}Recent Files{% endblock %}
 
-<div class="row">
-    {% if photos %}
-        {% for photo in photos %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if photo.image %}
-                        <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                        <div class="card-img-top bg-light text-center py-5" style="height: 200px;">
-                            <span class="text-muted">Pas d'image</span>
-                        </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ photo.Nom }}</h5>
-                        <p class="card-text">{{ photo.Descreption|truncatewords:15 }}</p>
-                        <p class="text-muted small">Publié le {{ photo.upload_date|date:"d/m/Y" }}</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary btn-sm">Voir (function)</a>
-                            <a href="{% url 'photo_detail_class' photo.id %}" class="btn btn-info btn-sm">Voir (class)</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-12">
-            <div class="alert alert-info">
-                Aucune photo n'est disponible pour le moment.
-            </div>
+{% block header_actions %}
+<form class="d-flex" role="search">
+  <input class="form-control me-2" type="search" placeholder="Search Photos" aria-label="Search">
+</form>
+{% endblock %}
+
+{% block main_content %}
+<div class="row g-4">
+  {% for photo in photos %}
+  <div class="col-md-4">
+    <div class="card shadow-sm rounded-4 h-100 border-0 photo-card">
+      <div class="position-relative overflow-hidden rounded-top-4">
+        {% if photo.image %}
+          <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}" style="height: 250px; object-fit: cover; transition: transform 0.3s ease;">
+          <div class="position-absolute top-0 end-0 m-3">
+            <span class="badge bg-primary bg-opacity-75 rounded-pill px-3 py-2">
+              <i class="bi bi-calendar3 me-1"></i>{{ photo.upload_date|date:"d/m/Y" }}
+            </span>
+          </div>
+        {% else %}
+          <div class="card-img-top bg-light text-center py-5" style="height: 250px;">
+            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2">Pas d'image</p>
+          </div>
+        {% endif %}
+      </div>
+      <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-3">{{ photo.Nom }}</h5>
+        <p class="card-text text-muted mb-4">{{ photo.Descreption|truncatewords:15 }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-eye me-2"></i>Voir
+          </a>
+          <div class="text-muted small">
+            <i class="bi bi-clock me-1"></i>{{ photo.upload_date|timesince }}
+          </div>
         </div>
-    {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="text-center mt-5">
+  <a href="{% url 'upload_photo' %}" class="btn btn-success btn-lg rounded-pill shadow px-5">
+    <i class="bi bi-upload me-2"></i>Ajouter une nouvelle photo
+  </a>
 </div>
 
-<div class="text-center mt-4">
-    <a href="{% url 'upload_photo' %}" class="btn btn-success">
-        <i class="bi bi-upload"></i> Ajouter une nouvelle photo
-    </a>
+<style>
+.photo-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.photo-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.photo-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.photo-card .btn-primary {
+  transition: all 0.3s ease;
+}
+
+.photo-card .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+}
+</style>
 {% endblock %} 

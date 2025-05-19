@@ -1,0 +1,219 @@
+{% extends 'myapp/layout.html' %}
+
+{% block title %}Login - Photo Gallery{% endblock %}
+
+{% block main_content %}
+<style>
+  body, .bg-auth {
+    background: #f6f7fa !important;
+  }
+  .auth-outer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f6f7fa;
+  }
+  .auth-split-container {
+    width: 900px;
+    max-width: 98vw;
+    min-height: 540px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background: none;
+    border-radius: 2rem;
+    box-shadow: none;
+    margin: 0 auto;
+  }
+  .auth-left {
+    background: url('{{ MEDIA_URL }}photos/photo-1522878308970-972ec5eedc0d.avif') center/cover no-repeat;
+    min-width: 350px;
+    width: 45%;
+    min-height: 540px;
+    border-radius: 2rem 0 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.07);
+  }
+  .auth-left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.18);
+    border-radius: 2rem 0 0 2rem;
+  }
+  .auth-form-card {
+    background: #fff;
+    border-radius: 0 2rem 2rem 0;
+    box-shadow: 0 8px 32px 0 rgba(60,60,120,0.10);
+    padding: 3rem 2.5rem 2.5rem 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    margin: auto 0 auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .auth-form-card h2 {
+    font-weight: 800;
+    font-size: 2.1rem;
+    margin-bottom: 2rem;
+    letter-spacing: -1px;
+    color: #18181b;
+    text-align: center;
+  }
+  .form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0.25rem;
+  }
+  .form-control {
+    border-radius: 0.9rem;
+    border: 1px solid #e5e7eb;
+    background: #f8f9fb;
+    font-size: 1.08rem;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 1.1rem;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+  .form-control:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 2px #e0e7ff;
+    background: #fff;
+  }
+  .btn-dark {
+    background: #18181b;
+    border: none;
+    border-radius: 1.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    padding: 0.85rem 0;
+    margin-top: 0.2rem;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .btn-dark:hover, .btn-dark:focus {
+    background: #232326;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+  .social-btn {
+    border: 1px solid #e5e7eb;
+    border-radius: 2rem;
+    padding: 0.55rem 1.3rem;
+    margin: 0 0.3rem;
+    background: #fff;
+    color: #222;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s, border 0.2s;
+  }
+  .social-btn:hover, .social-btn:focus {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #a5b4fc;
+    text-decoration: none;
+  }
+  .divider {
+    text-align: center;
+    margin: 1.5rem 0 1.2rem 0;
+    color: #d1d5db;
+    font-size: 1rem;
+    position: relative;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+  }
+  .divider:before, .divider:after {
+    content: '';
+    display: inline-block;
+    width: 38%;
+    height: 1px;
+    background: #ececec;
+    vertical-align: middle;
+    margin: 0 0.5rem;
+  }
+  .text-muted {
+    color: #888 !important;
+    font-size: 1rem;
+  }
+  @media (max-width: 900px) {
+    .auth-split-container {
+      width: 100vw;
+      min-width: 0;
+    }
+    .auth-left {
+      min-width: 200px;
+      width: 38%;
+    }
+    .auth-form-card {
+      max-width: 100vw;
+      padding: 2rem 1.2rem 1.5rem 1.2rem;
+    }
+  }
+  @media (max-width: 700px) {
+    .auth-split-container {
+      flex-direction: column;
+      min-height: 100vh;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .auth-left {
+      width: 100%;
+      min-width: 0;
+      min-height: 180px;
+      height: 180px;
+      border-radius: 0 0 1.5rem 1.5rem;
+      box-shadow: none;
+    }
+    .auth-left::before {
+      border-radius: 0 0 1.5rem 1.5rem;
+    }
+    .auth-form-card {
+      border-radius: 1.5rem;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+  }
+</style>
+<div class="auth-outer">
+  <div class="auth-split-container">
+    <div class="auth-left d-none d-md-flex flex-column justify-content-center align-items-center"></div>
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center" style="background:transparent;">
+      <div class="auth-form-card">
+        <h2>Welcome Back</h2>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        <form method="post" autocomplete="on">
+          {% csrf_token %}
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" name="username" required autocomplete="username">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+          <button type="submit" class="btn btn-dark btn-lg w-100 mb-2" aria-label="Login">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+          </button>
+        </form>
+        <div class="text-center mt-2 mb-2">
+          <span class="text-muted">Don't have an account? <a href="{% url 'register' %}">Register here</a></span>
+        </div>
+        <div class="divider">or</div>
+        <div class="d-flex justify-content-center mb-2">
+          <a href="#" class="social-btn" aria-label="Sign in with Google"><i class="bi bi-google me-2"></i><span class="d-none d-md-inline">Sign in with Google</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
