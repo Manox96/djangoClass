@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.views.generic import DetailView
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from .models import Photo
 from .forms import PhotoUploadForm
@@ -29,7 +29,7 @@ def home(request):
         'photos': photos,
         'form': form
     }
-    return render(request, 'myapp/home.html', context)
+    return render(request, 'myapp/photo_list.html', context)
 
 # Photo list view
 @login_required(login_url='login')
@@ -93,11 +93,23 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        login_type = request.POST.get('login_type', 'user')
+        
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            # Check if user is admin when admin login is selected
+            if login_type == 'admin' and not user.is_staff:
+                messages.error(request, 'This account does not have admin privileges.')
+                return render(request, 'myapp/login.html')
+            
             login(request, user)
-            messages.success(request, 'Welcome back!')
+            messages.success(request, f'Welcome back{" admin" if login_type == "admin" else ""}!')
+            
+            # Redirect admin users to admin dashboard
+            if login_type == 'admin':
+                return redirect('admin_dashboard')
+            
             # Get the next parameter from the URL, default to photo_list
             next_url = request.GET.get('next', 'photo_list')
             return redirect(next_url)
@@ -139,4 +151,109 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
-    return redirect('login') 
+    return redirect('login')
+
+@login_required(login_url='login')
+def delete_photo(request, photo_id):
+    photo = get_object_or_404(Photo, id=photo_id)
+    if request.method == 'POST':
+        photo.delete()
+        messages.success(request, 'Photo supprimée avec succès !')
+        return redirect('photo_list')
+    return redirect('photo_detail', photo_id=photo_id)
+
+@login_required(login_url='login')
+def favorite_photos(request):
+    photos = Photo.objects.filter(favorites=request.user).order_by('-upload_date')
+    context = {
+        'photos': photos,
+        'title': 'Mes Favoris'
+    }
+    return render(request, 'myapp/photo_list.html', context)
+
+@login_required(login_url='login')
+def update_photo(request, photo_id):
+    photo = get_object_or_404(Photo, id=photo_id)
+    if request.method == 'POST':
+        form = PhotoUploadForm(request.POST, request.FILES, instance=photo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Photo mise à jour avec succès !')
+            return redirect('photo_list')
+    else:
+        form = PhotoUploadForm(instance=photo)
+    
+    context = {
+        'form': form,
+        'photo': photo,
+        'title': 'Modifier la photo'
+    }
+    return render(request, 'myapp/update_photo.html', context)
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+@login_required(login_url='login')
+@user_passes_test(is_admin, login_url='login')
+def admin_dashboard(request):
+    users = User.objects.all().order_by('-date_joined')
+    context = {
+        'users': users,
+        'title': 'Admin Dashboard'
+    }
+    return render(request, 'myapp/admin_dashboard.html', context)
+
+@login_required(login_url='login')
+@user_passes_test(is_admin, login_url='login')
+def admin_edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        is_staff = request.POST.get('is_staff') == 'on'
+        is_active = request.POST.get('is_active') == 'on'
+        
+        # Check if username is already taken by another user
+        if User.objects.exclude(id=user_id).filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'myapp/admin_edit_user.html', {'user': user})
+        
+        # Check if email is already taken by another user
+        if User.objects.exclude(id=user_id).filter(email=email).exists():
+            messages.error(request, 'Email already registered.')
+            return render(request, 'myapp/admin_edit_user.html', {'user': user})
+        
+        user.username = username
+        user.email = email
+        user.is_staff = is_staff
+        user.is_active = is_active
+        
+        if password:
+            user.set_password(password)
+        
+        user.save()
+        messages.success(request, 'User updated successfully!')
+        return redirect('admin_dashboard')
+    
+    return render(request, 'myapp/admin_edit_user.html', {'user': user})
+
+@login_required(login_url='login')
+@user_passes_test(is_admin, login_url='login')
+def admin_delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    
+    # Prevent deleting the last admin
+    if user.is_staff and User.objects.filter(is_staff=True).count() <= 1:
+        messages.error(request, 'Cannot delete the last admin user.')
+        return redirect('admin_dashboard')
+    
+    # Prevent deleting yourself
+    if user == request.user:
+        messages.error(request, 'Cannot delete your own account.')
+        return redirect('admin_dashboard')
+    
+    user.delete()
+    messages.success(request, 'User deleted successfully!')
+    return redirect('admin_dashboard') 

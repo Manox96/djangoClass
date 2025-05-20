@@ -186,17 +186,34 @@
     <div class="auth-left d-none d-md-flex flex-column justify-content-center align-items-center"></div>
     <div class="flex-grow-1 d-flex align-items-center justify-content-center" style="background:transparent;">
       <div class="auth-form-card">
-        <h2>Welcome Back</h2>
-        {% if messages %}
+        <h2>Login</h2>
+        {% comment %} {% if messages %}
           {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
               {{ message }}
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           {% endfor %}
-        {% endif %}
+        {% endif %} {% endcomment %}
         <form method="post" autocomplete="on">
           {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Login as</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="login_type" id="userLogin" value="user" checked>
+                <label class="form-check-label" for="userLogin">
+                  User
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="login_type" id="adminLogin" value="admin">
+                <label class="form-check-label" for="adminLogin">
+                  Admin
+                </label>
+              </div>
+            </div>
+          </div>
           <label for="username" class="form-label">Username</label>
           <input type="text" class="form-control" id="username" name="username" required autocomplete="username">
           <label for="password" class="form-label">Password</label>
@@ -207,10 +224,6 @@
         </form>
         <div class="text-center mt-2 mb-2">
           <span class="text-muted">Don't have an account? <a href="{% url 'register' %}">Register here</a></span>
-        </div>
-        <div class="divider">or</div>
-        <div class="d-flex justify-content-center mb-2">
-          <a href="#" class="social-btn" aria-label="Sign in with Google"><i class="bi bi-google me-2"></i><span class="d-none d-md-inline">Sign in with Google</span></a>
         </div>
       </div>
     </div>

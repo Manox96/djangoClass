@@ -11,15 +11,134 @@
 {% endblock %}
 
 {% block main_content %}
+<style>
+  .photo-card {
+    background: #fff;
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(60,60,120,0.10);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .photo-card:hover {
+    box-shadow: 0 12px 36px rgba(80, 80, 180, 0.18) !important;
+    transform: translateY(-4px) scale(1.03);
+  }
+  .card-img-top {
+    border-radius: 2rem 2rem 0 0;
+    height: 250px;
+    object-fit: cover;
+    transition: filter 0.2s;
+  }
+  .photo-card:hover .card-img-top {
+    filter: brightness(0.92) blur(1px);
+  }
+  .card-title {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #18181b;
+    margin-bottom: 0.5rem;
+  }
+  .card-text {
+    color: #444;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .action-buttons .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+    min-width: auto;
+    white-space: nowrap;
+  }
+  .action-buttons .btn i {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
+  .btn-primary {
+    background: #18181b;
+    border: none;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .btn-primary:hover {
+    background: #232326;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  .btn-favorite {
+    background: #fff;
+    border: 1px solid #ffc107;
+    color: #ffc107;
+    box-shadow: 0 2px 4px rgba(255,193,7,0.1);
+  }
+  .btn-favorite:hover, .btn-favorite.active {
+    background: #ffc107;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255,193,7,0.2);
+  }
+  .btn-danger {
+    background: #fff;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    box-shadow: 0 2px 4px rgba(220,53,69,0.1);
+  }
+  .btn-danger:hover {
+    background: #dc3545;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220,53,69,0.2);
+  }
+  .btn-info {
+    background: #18181b;
+    border: none;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .btn-info:hover {
+    background: #232326;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  .badge {
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 1rem;
+    padding: 0.4rem 1rem;
+  }
+  .photo-card .card-body {
+    padding: 1.5rem;
+  }
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 1rem 1.5rem;
+  }
+  .text-muted {
+    font-size: 0.85rem;
+  }
+</style>
 <div class="row g-4">
   {% for photo in photos %}
   <div class="col-md-4">
-    <div class="card shadow-sm rounded-4 h-100 border-0 photo-card">
-      <div class="position-relative overflow-hidden rounded-top-4">
+    <div class="photo-card h-100 position-relative">
+      <div class="position-relative overflow-hidden">
         {% if photo.image %}
-          <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}" style="height: 250px; object-fit: cover; transition: transform 0.3s ease;">
+          <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.Nom }}">
           <div class="position-absolute top-0 end-0 m-3">
-            <span class="badge bg-primary bg-opacity-75 rounded-pill px-3 py-2">
+            <span class="badge bg-primary bg-opacity-75">
               <i class="bi bi-calendar3 me-1"></i>{{ photo.upload_date|date:"d/m/Y" }}
             </span>
           </div>
@@ -30,14 +149,31 @@
           </div>
         {% endif %}
       </div>
-      <div class="card-body p-4">
-        <h5 class="card-title fw-bold mb-3">{{ photo.Nom }}</h5>
-        <p class="card-text text-muted mb-4">{{ photo.Descreption|truncatewords:15 }}</p>
+      <div class="card-body">
+        <h5 class="card-title">{{ photo.Nom }}</h5>
+        <p class="card-text">{{ photo.Descreption|truncatewords:15 }}</p>
+      </div>
+      <div class="card-footer">
         <div class="d-flex justify-content-between align-items-center">
-          <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary rounded-pill px-4">
-            <i class="bi bi-eye me-2"></i>Voir
-          </a>
-          <div class="text-muted small">
+          <div class="action-buttons">
+            <a href="{% url 'photo_detail' photo.id %}" class="btn btn-primary">
+              <i class="bi bi-eye"></i>Voir
+            </a>
+            <a href="{% url 'update_photo' photo.id %}" class="btn btn-info">
+              <i class="bi bi-pencil"></i>Modifier
+            </a>
+            <a href="{% url 'toggle_favorite' photo.id %}" class="btn btn-favorite {% if request.user in photo.favorites.all %}active{% endif %}">
+              <i class="bi {% if request.user in photo.favorites.all %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+              {% if request.user in photo.favorites.all %}Favori{% else %}Favoris{% endif %}
+            </a>
+            <form method="post" action="{% url 'delete_photo' photo.id %}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette photo ?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i>Supprimer
+              </button>
+            </form>
+          </div>
+          <div class="text-muted">
             <i class="bi bi-clock me-1"></i>{{ photo.upload_date|timesince }}
           </div>
         </div>
@@ -46,37 +182,11 @@
   </div>
   {% endfor %}
 </div>
+{% if request.resolver_match.url_name != 'favorite_photos' %}
 <div class="text-center mt-5">
   <a href="{% url 'upload_photo' %}" class="btn btn-success btn-lg rounded-pill shadow px-5">
     <i class="bi bi-upload me-2"></i>Ajouter une nouvelle photo
   </a>
 </div>
-
-<style>
-.photo-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.photo-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-}
-
-.photo-card:hover .card-img-top {
-  transform: scale(1.05);
-}
-
-.photo-card .card-img-top {
-  transition: transform 0.3s ease;
-}
-
-.photo-card .btn-primary {
-  transition: all 0.3s ease;
-}
-
-.photo-card .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
-}
-</style>
+{% endif %}
 {% endblock %} 
