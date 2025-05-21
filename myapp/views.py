@@ -15,14 +15,16 @@ def home(request):
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            photo = form.save(commit=False)
+            photo.user = request.user
+            photo.save()
             messages.success(request, 'Photo uploadée avec succès !')
             return redirect('home')
     else:
         form = PhotoUploadForm()
         
     # Get photos for display
-    photos = Photo.objects.all().order_by('-upload_date')
+    photos = Photo.objects.filter(user=request.user).order_by('-upload_date')
     
     context = {
         'title': 'Accueil',
@@ -34,7 +36,7 @@ def home(request):
 # Photo list view
 @login_required(login_url='login')
 def photo_list(request):
-    photos = Photo.objects.all().order_by('-upload_date')
+    photos = Photo.objects.filter(user=request.user).order_by('-upload_date')
     context = {
         'photos': photos
     }
@@ -64,7 +66,9 @@ def upload_photo(request):
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            photo = form.save(commit=False)
+            photo.user = request.user
+            photo.save()
             messages.success(request, 'Photo uploadée avec succès !')
             return redirect('photo_list')
     else:
@@ -164,7 +168,7 @@ def delete_photo(request, photo_id):
 
 @login_required(login_url='login')
 def favorite_photos(request):
-    photos = Photo.objects.filter(favorites=request.user).order_by('-upload_date')
+    photos = Photo.objects.filter(favorites=request.user, user=request.user).order_by('-upload_date')
     context = {
         'photos': photos,
         'title': 'Mes Favoris'

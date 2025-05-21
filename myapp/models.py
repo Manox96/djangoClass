@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Photo(models.Model) :
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='photos', null=True, blank=True)
     Nom = models.CharField(max_length=200)
     Descreption = models.TextField(blank=True)
     upload_date = models.DateTimeField(default=timezone.now)

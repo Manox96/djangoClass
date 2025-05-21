@@ -6,40 +6,93 @@
 
 {% block main_content %}
 <style>
+  body, .bg-auth {
+    background: #f6f7fa !important;
+  }
   .upload-card {
     background: #fff;
     border-radius: 2rem;
     box-shadow: 0 8px 32px 0 rgba(60,60,120,0.10);
-    padding: 2.5rem 2rem 2rem 2rem;
+    padding: 3rem 2.5rem 2.5rem 2.5rem;
     max-width: 600px;
     margin: 2rem auto;
   }
   .upload-card h4 {
     font-weight: 800;
-    font-size: 1.3rem;
-    color: #18181b;
+    font-size: 2.1rem;
     margin-bottom: 2rem;
+    letter-spacing: -1px;
+    color: #18181b;
+    text-align: center;
   }
-  .btn-success, .btn-secondary {
+  .form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0.25rem;
+  }
+  .form-control {
+    border-radius: 0.9rem;
+    border: 1px solid #e5e7eb;
+    background: #f8f9fb;
+    font-size: 1.08rem;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 1.1rem;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+  .form-control:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 2px #e0e7ff;
+    background: #fff;
+  }
+  .btn-success {
+    background: #198754;
+    border: none;
     border-radius: 1.5rem;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     letter-spacing: 0.5px;
-    padding: 0.6rem 1.5rem;
+    padding: 0.85rem 0;
+    margin-top: 0.2rem;
+    margin-bottom: 0.7rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     transition: background 0.2s, box-shadow 0.2s;
   }
   .btn-success:hover, .btn-success:focus {
-    background: #198754;
+    background: #157347;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
-  .btn-secondary:hover, .btn-secondary:focus {
+  .btn-secondary {
     background: #6c757d;
+    border: none;
+    border-radius: 1.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    padding: 0.85rem 0;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .btn-secondary:hover, .btn-secondary:focus {
+    background: #5c636a;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+  .form-text {
+    color: #888;
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .is-invalid {
+    border-color: #dc3545;
+  }
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
   }
 </style>
 <div class="upload-card">
-  <h4><i class="bi bi-upload me-2"></i>Formulaire d'upload</h4>
+  <h4><i class="bi bi-upload me-2"></i>Upload Photo</h4>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="mb-3">
@@ -59,8 +112,12 @@
       <div class="form-text">Formats acceptés : JPG, PNG, GIF</div>
     </div>
     <div class="d-grid gap-2">
-      <button type="submit" class="btn btn-success btn-lg"> <i class="bi bi-upload"></i> Uploader</button>
-      <a href="{% url 'photo_list' %}" class="btn btn-secondary btn-lg">Annuler</a>
+      <button type="submit" class="btn btn-success btn-lg">
+        <i class="bi bi-upload me-2"></i>Uploader
+      </button>
+      <a href="{% url 'photo_list' %}" class="btn btn-secondary btn-lg">
+        <i class="bi bi-x-circle me-2"></i>Annuler
+      </a>
     </div>
   </form>
 </div>

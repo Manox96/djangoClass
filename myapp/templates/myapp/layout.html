@@ -147,7 +147,8 @@
   {% if request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'register' and not request.resolver_match.url_name|startswith:'admin_' %}
   <nav class="sidebar">
     <div class="sidebar-sticky">
-      <h4>Just Drive</h4>
+      <!-- <h4>Just Drive</h4> -->
+      <h4>Reccipe</h4>
       <ul class="nav flex-column">
         <li class="nav-item mb-2">
           <a class="nav-link {% if request.resolver_match.url_name == 'photo_list' %}active{% endif %}" href="/photos/">
@@ -171,7 +172,7 @@
         <div class="stats-number">
           {% if photos %}{{ photos|length }}{% else %}0{% endif %}
         </div>
-        <div class="stats-label">images</div>
+        <div class="stats-label">recette</div>
       </div>
     </div>
   </nav>
